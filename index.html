@@ -170,7 +170,7 @@ INLINE_OPTIONS_RE = re.compile(r'(?P<A>A\.\s.*?)(?=\t?\s*B\.\s)\t?\s*(?P<B>B\.\s
 CIRCLED = {"A": "\u24B6", "B": "\u24B7", "C": "\u24B8", "D": "\u24B9"} 
 
 # Ép định dạng PHẦN phải có dấu chấm để phân biệt với Lời dẫn khối
-MAIN_PART_RE = re.compile(r'^\s*(?:PART|PHẦN)\s+(I{1,3}|[123])\.', re.IGNORECASE)
+MAIN_PART_RE = re.compile(r'^\s*(?:PART|PHẦN)\s+(I{1,3}|[123])\s*\.', re.IGNORECASE)
 
 def _get_main_part(text):
     if not text: return None
@@ -609,6 +609,56 @@ def extract_and_remove_part_header(group_blocks):
             return header_specs
     return []
 
+def _rename_part_header(header_specs, new_num):
+    if not header_specs: return []
+    roman = ["", "I", "II", "III"][new_num]
+    arabic = str(new_num)
+    
+    new_specs = []
+    for spec in header_specs:
+        full_text = "".join(seg[0] for seg in spec.segments)
+        m = MAIN_PART_RE.search(full_text)
+        if m:
+            old_val = m.group(1)
+            new_val = arabic if old_val in ("1", "2", "3") else roman
+            start_idx = m.start(1)
+            end_idx = m.end(1)
+            
+            new_segments = []
+            current_len = 0
+            replaced = False
+            for text, run, strip_u, is_num in spec.segments:
+                seg_len = len(text)
+                if not replaced:
+                    if current_len <= start_idx and current_len + seg_len >= end_idx:
+                        local_start = start_idx - current_len
+                        local_end = end_idx - current_len
+                        new_text = text[:local_start] + new_val + text[local_end:]
+                        new_segments.append((new_text, run, strip_u, is_num))
+                        replaced = True
+                    elif current_len <= start_idx < current_len + seg_len:
+                        local_start = start_idx - current_len
+                        new_text = text[:local_start] + new_val
+                        new_segments.append((new_text, run, strip_u, is_num))
+                    elif start_idx < current_len and current_len < end_idx:
+                        if current_len + seg_len >= end_idx:
+                            local_end = end_idx - current_len
+                            new_text = text[local_end:]
+                            if new_text:
+                                new_segments.append((new_text, run, strip_u, is_num))
+                            replaced = True
+                    else:
+                        new_segments.append((text, run, strip_u, is_num))
+                else:
+                    new_segments.append((text, run, strip_u, is_num))
+                
+                current_len += seg_len
+                
+            new_specs.append(ParaSpec(spec.source_paragraph, new_segments))
+        else:
+            new_specs.append(spec)
+    return new_specs
+
 def shuffle_group_with_pins(group_blocks, rng, opts):
     if not group_blocks: return []
     pins = [opts.get(b["part_idx"], {}).get("pin_block", False) for b in group_blocks]
@@ -694,23 +744,16 @@ def shuffle_plan(parsed, parts, opts, rng=None):
     if opts.get("shuf_block_p2", False): part2_blocks = shuffle_group_with_pins(part2_blocks, rng, opts)
     if opts.get("shuf_block_p3", False): part3_blocks = shuffle_group_with_pins(part3_blocks, rng, opts)
 
-    if part1_blocks and p1_header:
-        part1_blocks[0]["specs_before"] = p1_header + part1_blocks[0]["specs_before"]
-    if part2_blocks and p2_header:
-        part2_blocks[0]["specs_before"] = p2_header + part2_blocks[0]["specs_before"]
-    if part3_blocks and p3_header:
-        part3_blocks[0]["specs_before"] = p3_header + part3_blocks[0]["specs_before"]
-
-    main_parts = [(1, part1_blocks), (2, part2_blocks), (3, part3_blocks)]
+    main_parts = [(1, part1_blocks, p1_header), (2, part2_blocks, p2_header), (3, part3_blocks, p3_header)]
     swappable_indices = []
     swappable_items = []
     
     allow_swap = {1: opts.get("swap_p1", False), 2: opts.get("swap_p2", False), 3: opts.get("swap_p3", False)}
     
-    for idx, (p_num, p_blocks) in enumerate(main_parts):
+    for idx, (p_num, p_blocks, p_hdr) in enumerate(main_parts):
         if allow_swap.get(p_num, False):
             swappable_indices.append(idx)
-            swappable_items.append((p_num, p_blocks))
+            swappable_items.append((p_num, p_blocks, p_hdr))
             
     if len(swappable_items) > 1:
         rng.shuffle(swappable_items)
@@ -720,6 +763,13 @@ def shuffle_plan(parsed, parts, opts, rng=None):
     final_p1_blocks = main_parts[0][1]
     final_p2_blocks = main_parts[1][1]
     final_p3_blocks = main_parts[2][1]
+
+    if final_p1_blocks and main_parts[0][2]:
+        final_p1_blocks[0]["specs_before"] = _rename_part_header(main_parts[0][2], 1) + final_p1_blocks[0]["specs_before"]
+    if final_p2_blocks and main_parts[1][2]:
+        final_p2_blocks[0]["specs_before"] = _rename_part_header(main_parts[1][2], 2) + final_p2_blocks[0]["specs_before"]
+    if final_p3_blocks and main_parts[2][2]:
+        final_p3_blocks[0]["specs_before"] = _rename_part_header(main_parts[2][2], 3) + final_p3_blocks[0]["specs_before"]
 
     blocks = final_p1_blocks + final_p2_blocks + final_p3_blocks + other_blocks
         
