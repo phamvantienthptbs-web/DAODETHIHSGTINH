@@ -15,7 +15,8 @@
         .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .toggle-checkbox:checked + .toggle-label + .toggle-dot { transform: translateX(100%); }
-        #cb-shuffle-parts:checked + .toggle-label + .toggle-dot { transform: translateX(100%); }
+        #cb-shuffle-part23:checked + .toggle-label + .toggle-dot { transform: translateX(100%); }
+        #cb-shuffle-blocks-p23:checked + .toggle-label + .toggle-dot { transform: translateX(100%); }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
@@ -104,22 +105,36 @@
             <div class="lg:col-span-8">
                 <div id="step2" class="bg-white rounded-xl shadow-sm border border-slate-200 h-full flex flex-col opacity-50 pointer-events-none transition-opacity duration-300">
                     <div class="p-6 border-b border-slate-200 bg-slate-50 rounded-t-xl">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center mb-2">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center mb-4">
                             <span class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full inline-flex items-center justify-center mr-2 text-sm">2</span>
                             Cấu Hình Xáo Trộn Chi Tiết
                         </h2>
-                        <div class="flex flex-col p-3 bg-indigo-50 border border-indigo-100 rounded-lg">
+                        <div class="flex flex-col p-4 bg-indigo-50 border border-indigo-100 rounded-lg space-y-4">
+                            <div class="text-sm font-bold text-indigo-900 border-b border-indigo-200 pb-2">CẤU HÌNH PHẦN II & PHẦN III</div>
+                            
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <div class="relative">
-                                    <input type="checkbox" id="cb-shuffle-parts" checked class="sr-only toggle-checkbox">
-                                    <div class="block bg-slate-300 w-12 h-7 rounded-full toggle-label transition"></div>
-                                    <div class="dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition transform toggle-dot"></div>
+                                    <input type="checkbox" id="cb-shuffle-part23" class="sr-only toggle-checkbox">
+                                    <div class="block bg-slate-300 w-10 h-6 rounded-full toggle-label transition"></div>
+                                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform toggle-dot"></div>
                                 </div>
-                                <div>
-                                    <span class="font-bold text-indigo-900 text-sm">ĐẢO VỊ TRÍ CÁC KHỐI/PHẦN (TOÀN ĐỀ)</span>
-                                </div>
+                                <span class="font-medium text-indigo-900 text-sm">Đảo vị trí Phần II và Phần III cho nhau (Toàn cục)</span>
                             </label>
-                            <p class="text-xs text-indigo-700 mt-2 pl-14">✓ Các phần sẽ hoán đổi vị trí ngẫu nhiên cho nhau.<br>✓ Tự động đồng bộ số thứ tự trong lời dẫn, đoạn văn điền khuyết khớp với số của câu hỏi mới.<br>✓ Phần <b>LISTENING</b> (nhận diện bằng từ LISTENING ở đầu dòng) luôn nằm đầu đề; không đảo phần nhỏ và câu hỏi, chỉ đảo đáp án.</p>
+                            
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <div class="relative">
+                                    <input type="checkbox" id="cb-shuffle-blocks-p23" checked class="sr-only toggle-checkbox">
+                                    <div class="block bg-slate-300 w-10 h-6 rounded-full toggle-label transition"></div>
+                                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform toggle-dot"></div>
+                                </div>
+                                <span class="font-medium text-indigo-900 text-sm">Đảo các dạng bài / khối câu hỏi bên trong Phần II, Phần III</span>
+                            </label>
+                            
+                            <div class="text-xs text-indigo-800 mt-2 bg-indigo-100/50 p-3 rounded-lg leading-relaxed">
+                                <b>Quy tắc tự động:</b><br>
+                                • <span class="text-red-600 font-semibold">Phần I:</span> Mặc định luôn cố định ở đầu đề, cố định vị trí các bài bên trong, cố định thứ tự câu (chỉ cho phép xáo đáp án).<br>
+                                • <span class="text-emerald-700 font-semibold">Phần II & III:</span> Áp dụng đảo/cố định dạng bài, câu hỏi, đáp án theo cấu hình trên và dưới.
+                            </div>
                         </div>
                     </div>
                     
@@ -150,13 +165,23 @@ OPTION_START_RE = re.compile(r'^\s*([ABCD])\.\s')
 INLINE_OPTIONS_RE = re.compile(r'(?P<A>A\.\s.*?)(?=\t?\s*B\.\s)\t?\s*(?P<B>B\.\s.*?)(?=\t?\s*C\.\s)\t?\s*(?P<C>C\.\s.*?)(?=\t?\s*D\.\s)\t?\s*(?P<D>D\.\s.*)$', re.DOTALL)
 CIRCLED = {"A": "\u24B6", "B": "\u24B7", "C": "\u24B8", "D": "\u24B9"} 
 
+# ---------------- NHẬN DIỆN PHẦN LỚN (PART I, PART II, PART III) ----------------
+MAIN_PART_RE = re.compile(r'^\s*(?:PART|PHẦN)\s+(I{1,3}|[123])\b', re.IGNORECASE)
+
+def _get_main_part(text):
+    if not text: return None
+    m = MAIN_PART_RE.search(text)
+    if m:
+        val = m.group(1).upper()
+        if val in ('I', '1'): return 1
+        if val in ('II', '2'): return 2
+        if val in ('III', '3'): return 3
+    return None
+
 # ---------------- NHẬN DIỆN PHẦN NGHE (LISTENING) ----------------
-# Dòng tiêu đề BẮT ĐẦU bằng từ LISTENING; cho phép tiền tố: "I.", "PHẦN I:", "PART A -", "SECTION 1."...
-# Không có tiền tố thì bắt buộc viết hoa "LISTENING" (tránh nhầm câu văn bắt đầu bằng "Listening to...").
 _LH_PREFIX = r'(?:(?:PHẦN|Phần|PART|Part|SECTION|Section)\s*(?:[IVX]+|\d+|[A-D])\s*[\.\:\-–—\)]*\s*|(?:[IVX]+|\d+|[A-D])\s*[\.\)\:\-–—]+\s*)'
 LISTENING_RE = re.compile(r'^\s*(?P<pre>' + _LH_PREFIX + r')?(?P<word>LISTENING|Listening)\b')
 PHAN_HEAD_RE = re.compile(r'^\s*PHẦN\s+(?:[IVX]+|\d+)\b', re.IGNORECASE)
-# Tiêu đề phần chung (VD "II. LEXICO-GRAMMAR AND READING") - dùng để KẾT THÚC phần Listening
 SECTION_HEAD_RE = re.compile(r'^\s*(?:(?:PART|SECTION)\s*(?:[IVX]+|[A-D])\b\s*[\.\:\-–—\)]*|[IVX]+\s*[\.\)\:\-–—]+)\s*(?P<rest>\S.*)$', re.DOTALL)
 SECTION_KEYWORD_RE = re.compile(r'READING|WRITING|SPEAKING|LEXICO|GRAMMAR|VOCABULARY|USE\s+OF\s+ENGLISH|LANGUAGE|PRONUNCIATION|CLOZE|ĐỌC|VIẾT|NGỮ\s+PHÁP|TỪ\s+VỰNG|TỰ\s+LUẬN|TRẮC\s+NGHIỆM', re.IGNORECASE)
 
@@ -258,7 +283,7 @@ class QuestionBlock:
         self.options = []
         self.options_mode = None
         self.options_ppr_source = None
-        self.option_gaps = None   # ký tự phân cách GỐC giữa các phương án (Tab / xuống dòng) để giữ nguyên bố cục
+        self.option_gaps = None
 
 def _seg_slice(spans, a, b, number_span=None):
     segments = []
@@ -391,8 +416,6 @@ def parse_exam(docx_path):
     return {"doc_path": docx_path, "prelude": prelude, "questions": questions, "fillers_after": fillers_after}
 
 def _find_listening_range(parsed):
-    """Tìm phần nghe: bắt đầu từ dòng LISTENING, kết thúc trước tiêu đề phần kế tiếp (VD "II. READING", "PHẦN II").
-    Trả về (số câu đầu, số câu cuối, nhãn tiêu đề Listening, nhãn tiêu đề phần kế tiếp) hoặc None."""
     all_q = sorted(q.number for q in parsed["questions"])
     if not all_q: return None
     seq = [(parsed["prelude"], None, all_q[0])]
@@ -425,9 +448,10 @@ def detect_parts(parsed):
     current_q_from = None
     last_seen_q = None
     has_explicit_lock = False
+    current_main_part = 1 # Mặc định bắt đầu từ Part 1
     
     def flush_part(q_to):
-        nonlocal current_label, current_q_from, has_explicit_lock
+        nonlocal current_label, current_q_from, has_explicit_lock, current_main_part
         if current_label and current_q_from is not None and q_to is not None and current_q_from <= q_to:
             label = current_label.replace('<', '').replace('>', '').strip()
             if len(label) > 100: label = label[:97] + "..."
@@ -437,17 +461,28 @@ def detect_parts(parsed):
                 "q_to": q_to,
                 "is_cloze": has_explicit_lock,
                 "explicit_lock": has_explicit_lock,
-                "from_regex": False
+                "from_regex": False,
+                "main_part": current_main_part
             })
         current_label = None
         current_q_from = None
         has_explicit_lock = False
 
     def process_specs(specs, next_qnum):
-        nonlocal current_label, current_q_from, has_explicit_lock
+        nonlocal current_label, current_q_from, has_explicit_lock, current_main_part
         for spec in specs:
             text = "".join(seg[0] for seg in spec.segments).strip()
             if not text: continue
+            
+            # Nhận diện Phần I, Phần II, Phần III
+            mp = _get_main_part(text)
+            if mp:
+                flush_part(last_seen_q)
+                current_main_part = mp
+                current_label = text
+                has_explicit_lock = False
+                current_q_from = next_qnum
+                continue
             
             m = PART_RE.search(text)
             if m:
@@ -463,7 +498,8 @@ def detect_parts(parsed):
                         "q_to": qt,
                         "is_cloze": is_locked,
                         "explicit_lock": is_locked,
-                        "from_regex": True
+                        "from_regex": True,
+                        "main_part": current_main_part
                     })
                 continue
                 
@@ -532,12 +568,12 @@ def detect_parts(parsed):
                 "q_to": qt,
                 "is_cloze": False,
                 "explicit_lock": False,
-                "from_regex": False
+                "from_regex": False,
+                "main_part": 1
             })
         if gap_ranges:
             final_parts.sort(key=lambda x: x["q_from"])
 
-    # PHẦN NGHE: gộp các phần nhỏ (Part 1, 2, 3...) nằm trong phạm vi Listening thành MỘT khối duy nhất
     lis = _find_listening_range(parsed)
     if lis:
         lf, lt, head, end_label = lis
@@ -560,7 +596,8 @@ def detect_parts(parsed):
             "is_cloze": False,
             "is_listening": True,
             "explicit_lock": False,
-            "from_regex": False
+            "from_regex": False,
+            "main_part": 1
         })
         final_parts = sorted(merged, key=lambda x: x["q_from"])
 
@@ -606,6 +643,7 @@ def shuffle_plan(parsed, parts, opts, rng=None):
         for i, spec in enumerate(parsed["prelude"]):
             text = "".join(seg[0] for seg in spec.segments)
             m = PART_RE.search(text)
+            mp = _get_main_part(text)
             
             bold_len, total_len = 0, 0
             for seg_text, run, _, _ in spec.segments:
@@ -618,7 +656,7 @@ def shuffle_plan(parsed, parts, opts, rng=None):
                     if b is not None and b.get(qn('w:val')) not in ('0', 'false'): bold_len += len(t)
             is_bold = (total_len > 10 and (bold_len / total_len) > 0.5)
 
-            if (m and m.group(1) == target_str) or (part_info.get("from_regex") == False and is_bold) or (part_info.get("is_listening") and _is_listening_head("".join(seg[0] for seg in spec.segments))):
+            if mp or (m and m.group(1) == target_str) or (part_info.get("from_regex") == False and is_bold) or (part_info.get("is_listening") and _is_listening_head("".join(seg[0] for seg in spec.segments))):
                 split_idx = i
                 break
                 
@@ -632,14 +670,37 @@ def shuffle_plan(parsed, parts, opts, rng=None):
                 else: block["specs_internal"][q_num] = parsed["fillers_after"].get(q_num, [])
             else: block["specs_internal"][q_num] = parsed["fillers_after"].get(q_num, [])
                 
-    # Phần Listening LUÔN ở đầu đề (giữ nguyên thứ tự các phần nhỏ); các khối còn lại đảo như cũ
-    def _is_lis(b):
-        return b["part_idx"] is not None and bool(parts[b["part_idx"]].get("is_listening"))
-    lis_blocks = [b for b in blocks if _is_lis(b)]
-    other_blocks = [b for b in blocks if not _is_lis(b)]
-    if opts.get("shuffle_parts", False):
+    # Gắn nhãn Main Part cho từng block
+    for block in blocks:
+        p_idx = block["part_idx"]
+        block["main_part"] = parts[p_idx].get("main_part", 1) if p_idx is not None else 1
+
+    # Phân loại khối
+    lis_blocks = [b for b in blocks if b["part_idx"] is not None and parts[b["part_idx"]].get("is_listening")]
+    non_lis_blocks = [b for b in blocks if b not in lis_blocks]
+
+    part1_blocks = [b for b in non_lis_blocks if b["main_part"] == 1]
+    part2_blocks = [b for b in non_lis_blocks if b["main_part"] == 2]
+    part3_blocks = [b for b in non_lis_blocks if b["main_part"] == 3]
+    other_blocks = [b for b in non_lis_blocks if b["main_part"] not in (1, 2, 3)]
+
+    # Đảo các dạng bài/khối bên trong Part II và Part III
+    if opts.get("shuffle_blocks_p23", False):
+        rng.shuffle(part2_blocks)
+        rng.shuffle(part3_blocks)
         rng.shuffle(other_blocks)
-    blocks = lis_blocks + other_blocks
+
+    # Đảo vị trí Part II và Part III
+    if opts.get("shuffle_part23", False):
+        if rng.choice([True, False]):
+            p23_blocks = part3_blocks + part2_blocks
+        else:
+            p23_blocks = part2_blocks + part3_blocks
+    else:
+        p23_blocks = part2_blocks + part3_blocks
+
+    # Lắp ráp lại toàn đề: Listening -> Part 1 -> Part 2 & 3 -> Khác
+    blocks = lis_blocks + part1_blocks + p23_blocks + other_blocks
         
     option_perm = {}
     for q_num, q in qmap.items(): option_perm[q_num] = list(q.options)
@@ -657,8 +718,8 @@ def shuffle_plan(parsed, parts, opts, rng=None):
                         rng.shuffle(order)
                         option_perm[q_num] = [qmap[q_num].options[idx] for idx in order]
                         
-            # Listening: KHÔNG đảo phần nhỏ, KHÔNG đảo câu hỏi - chỉ đảo phương án
-            if cfg.get("shuffle_order") and not part_info["is_cloze"] and not part_info.get("is_listening") and len(block["qnums"]) > 1:
+            # ẤN ĐỊNH: Tuyệt đối KHÔNG đảo câu hỏi nếu thuộc Phần I (main_part == 1)
+            if block["main_part"] != 1 and cfg.get("shuffle_order") and not part_info["is_cloze"] and not part_info.get("is_listening") and len(block["qnums"]) > 1:
                 rng.shuffle(block["qnums"])
                 
     new_order = []
@@ -666,7 +727,6 @@ def shuffle_plan(parsed, parts, opts, rng=None):
         
     number_str_map = {old_q_num: str(pos + 1) for pos, old_q_num in enumerate(new_order)}
     return global_header, blocks, option_perm, number_str_map, new_order
-
 
 def _copy_seg_run(paragraph, seg, new_number_str=None, mapper=None):
     text, run, strip_u, is_number = seg
@@ -745,7 +805,6 @@ def _relabel_first_char(segments, new_letter):
     return new_segments
 
 def _emit_gap(paragraph, gap, opt):
-    """Chèn đúng ký tự phân cách GỐC giữa 2 phương án (Tab / xuống dòng) để giữ nguyên bố cục đề."""
     r = paragraph.add_run(gap if gap else "\t")
     if opt is not None and opt.segments: copy_rpr(r, opt.segments[0][1], strip_underline=True)
 
@@ -761,7 +820,6 @@ def _emit_option_run(paragraph, opt, new_letter, is_first_of_opt):
     for seg in segments:
         _copy_seg_run(paragraph, seg)
 
-# Khổ giấy & lề theo ĐỀ MẪU (A4; trên 0,78 cm - dưới 0,70 cm - trái 1,41 cm - phải 1,25 cm)
 SAMPLE_PAGE = {"w": 11906, "h": 16838, "top": 440, "bottom": 398, "left": 800, "right": 706, "header": 720, "footer": 720, "gutter": 0}
 
 def apply_page_setup(doc, cfg):
@@ -779,7 +837,6 @@ def apply_page_setup(doc, cfg):
         sec.gutter = Twips(cfg["gutter"])
 
 def _emit_header_line(doc, parsed, header_line):
-    """Dòng "Mã đề: ###" - dùng cùng định dạng (font, cỡ chữ, giãn dòng) với nội dung đề, chữ đậm."""
     src = None
     cands = list(parsed["prelude"])
     for q in parsed["questions"][:3]: cands.extend(q.stem_paragraphs)
@@ -919,10 +976,14 @@ def generate_shuffled(options_json):
     num_ma_de = opts.pop('num_ma_de', 4)
     start_code = opts.pop('start_code', 101)
     insert_header = opts.pop('insert_header', True)
-    shuffle_parts_globally = opts.pop('shuffle_parts', False)
+    shuffle_part23 = opts.pop('shuffle_part23', False)
+    shuffle_blocks_p23 = opts.pop('shuffle_blocks_p23', False)
     sample_margins = opts.pop('sample_margins', True)
     
-    py_opts = {"shuffle_parts": shuffle_parts_globally}
+    py_opts = {
+        "shuffle_part23": shuffle_part23,
+        "shuffle_blocks_p23": shuffle_blocks_p23
+    }
     for k, v in opts.items():
         if k.isdigit(): py_opts[int(k)] = v
             
@@ -952,7 +1013,7 @@ def generate_shuffled(options_json):
     <div id="trial-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm">
             <h3 class="text-lg font-bold text-slate-800 mb-2">Đã hết lượt dùng thử</h3>
-            <p class="text-sm text-slate-600 mb-4">Bạn đã sử dụng hết lượt dùng thử miễn phí. Vui lòng liên hệ số ĐT 0943930787 để lấy mật khẩu thêm 10 lần dùng thử nữa.</p>
+            <p class="text-sm text-slate-600 mb-4">Bạn đã sử dụng hết lượt dùng thử miễn phí. Vui lòng liên hệ số ĐT 0943.930.787 để lấy mật khẩu thêm 10 lần dùng thử nữa.</p>
             <input type="password" id="trial-password-input" placeholder="Nhập mật khẩu" class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-emerald-500">
             <p id="trial-password-error" class="text-red-500 text-sm mb-3 hidden">Mật khẩu không đúng. Vui lòng thử lại.</p>
             <div class="flex justify-end gap-2 mt-2">
@@ -1039,24 +1100,29 @@ def generate_shuffled(options_json):
         
         parts.forEach((part, index) => {
             const isListening = !!part.is_listening;
-            let lockState = part.is_cloze || isListening;
+            const isPart1 = part.main_part === 1 && !isListening;
+            let lockState = part.is_cloze || isListening || isPart1;
             
             let lockIcon = isListening
-                ? `<svg class="w-5 h-5 text-sky-600 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg><span class="text-xs font-bold text-sky-700 bg-sky-50 px-2 py-1 rounded">Khóa phần &amp; câu · chỉ đảo đáp án</span>`
+                ? `<svg class="w-4 h-4 text-sky-600 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg><span class="text-xs font-bold text-sky-700 bg-sky-50 px-2 py-1 rounded">Listening: Khóa</span>`
+                : isPart1
+                ? `<svg class="w-4 h-4 text-red-600 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg><span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded">Cố định bài & câu</span>`
                 : lockState 
-                ? `<svg class="w-5 h-5 text-red-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg><span class="text-xs font-bold text-red-500 bg-red-50 px-2 py-1 rounded">Cố định thứ tự câu</span>`
-                : `<svg class="w-5 h-5 text-emerald-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg><span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Cho phép đảo câu</span>`;
+                ? `<svg class="w-4 h-4 text-red-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg><span class="text-xs font-bold text-red-500 bg-red-50 px-2 py-1 rounded">Cố định thứ tự câu</span>`
+                : `<svg class="w-4 h-4 text-emerald-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg><span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Cho phép đảo câu</span>`;
 
             let toggleDisabled = lockState ? "disabled" : "";
             let toggleOpacity = lockState ? "opacity-40 cursor-not-allowed" : "cursor-pointer";
+            let mainPartBadge = part.main_part ? `<span class="ml-2 text-[10px] font-bold text-indigo-700 bg-indigo-100 border border-indigo-200 px-2 py-0.5 rounded-full tracking-wider align-middle">PART ${part.main_part}</span>` : '';
 
             container.innerHTML += `
-                <div class="mb-4 bg-white border ${isListening ? 'border-sky-300' : part.explicit_lock ? 'border-red-200' : 'border-slate-200'} rounded-lg p-4 shadow-sm hover:shadow-md transition duration-200">
+                <div class="mb-4 bg-white border ${isListening ? 'border-sky-300' : isPart1 ? 'border-red-200' : part.explicit_lock ? 'border-red-200' : 'border-slate-200'} rounded-lg p-4 shadow-sm hover:shadow-md transition duration-200">
                     <div class="flex justify-between items-start mb-3">
                         <div class="flex-1 pr-4">
-                            <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide">
-                                Khối: CÂU ${part.q_from} - ${part.q_to}
-                                ${isListening ? '<span class="ml-2 text-[10px] font-bold text-sky-700 bg-sky-100 border border-sky-200 px-2 py-0.5 rounded-full tracking-wider align-middle">LISTENING</span>' : ''}
+                            <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide flex flex-wrap items-center gap-1">
+                                <span>Khối: CÂU ${part.q_from} - ${part.q_to}</span>
+                                ${mainPartBadge}
+                                ${isListening ? '<span class="text-[10px] font-bold text-sky-700 bg-sky-100 border border-sky-200 px-2 py-0.5 rounded-full tracking-wider">LISTENING</span>' : ''}
                             </h3>
                             <p class="text-sm text-slate-500 line-clamp-2 italic mt-1 bg-slate-50 p-2 rounded border-l-2 border-slate-300" title="${part.label}">"${part.label}"</p>
                         </div>
@@ -1084,17 +1150,15 @@ def generate_shuffled(options_json):
                             <span class="text-sm font-medium ${lockState ? 'text-slate-400' : 'text-slate-700'}">Đảo câu (Nội bộ)</span>
                         </label>
                     </div>
-                    ${isListening ? '<p class="text-xs text-sky-700 mt-3 leading-relaxed">Phần nghe luôn nằm đầu đề; giữ nguyên thứ tự các phần nhỏ (Part 1, 2, 3...) và câu hỏi. Chỉ đảo phương án A, B, C, D.</p>' : ''}
                 </div>
             `;
         });
     }
 
-    // --- QUẢN LÝ SỐ LƯỢT DÙNG THỬ ---
     let TRIAL_LIMIT = 10;
     const TRIAL_PASSWORD = "tienhuong28011981@";
     const TRIAL_COUNT_KEY = "dmd_trial_count";
-    const LIMIT_KEY = "dmd_limit_count"; // Lưu giới hạn hiện tại
+    const LIMIT_KEY = "dmd_limit_count"; 
 
     function getTrialCount() {
         return parseInt(localStorage.getItem(TRIAL_COUNT_KEY) || '0', 10) || 0;
@@ -1152,7 +1216,7 @@ def generate_shuffled(options_json):
             hideTrialModal();
             updateTrialUI();
             alert("Mật khẩu chính xác. Bạn đã được cộng thêm 10 lượt dùng thử.");
-            shuffleAndExport(); // tự động tạo đề tiếp sau khi mở khóa thành công
+            shuffleAndExport();
         } else {
             document.getElementById('trial-password-error').classList.remove('hidden');
         }
@@ -1164,7 +1228,6 @@ def generate_shuffled(options_json):
     });
 
     updateTrialUI();
-    // ---------------------------------
 
     async function shuffleAndExport() {
         if (!checkTrialAccess()) return;
@@ -1187,7 +1250,8 @@ def generate_shuffled(options_json):
                 num_ma_de: numMade,
                 start_code: startCode,
                 insert_header: document.getElementById('insert-header').checked,
-                shuffle_parts: document.getElementById('cb-shuffle-parts').checked,
+                shuffle_part23: document.getElementById('cb-shuffle-part23').checked,
+                shuffle_blocks_p23: document.getElementById('cb-shuffle-blocks-p23').checked,
                 sample_margins: document.getElementById('sample-margins').checked
             };
             
