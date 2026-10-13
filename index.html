@@ -78,7 +78,7 @@
                                     <div class="block bg-slate-200 w-10 h-6 rounded-full toggle-label transition"></div>
                                     <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform toggle-dot"></div>
                                 </div>
-                                <span class="text-sm font-medium text-slate-700">Căn lề chuẩn (A4 siêu tiết kiệm giấy)</span>
+                                <span class="text-sm font-medium text-slate-700">Căn lề chuẩn & Ép dòng (Siêu tiết kiệm)</span>
                             </label>
                         </div>
 
@@ -89,7 +89,7 @@
                                     <div class="block bg-slate-200 w-10 h-6 rounded-full toggle-label transition"></div>
                                     <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform toggle-dot"></div>
                                 </div>
-                                <span class="text-sm font-medium text-slate-700">Chèn dòng "Mã đề: ###"</span>
+                                <span class="text-sm font-medium text-slate-700">Chèn dòng "Mã đề: ###" tự động</span>
                             </label>
                         </div>
                     </div>
@@ -104,61 +104,37 @@
 
             <div class="lg:col-span-8">
                 <div id="step2" class="bg-white rounded-xl shadow-sm border border-slate-200 h-full flex flex-col opacity-50 pointer-events-none transition-opacity duration-300">
-                    <div class="p-6 border-b border-slate-200 bg-slate-50 rounded-t-xl">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center mb-4">
+                    <div class="p-5 border-b border-slate-200 bg-slate-50 rounded-t-xl shadow-sm z-10 relative">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center mb-3">
                             <span class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full inline-flex items-center justify-center mr-2 text-sm">2</span>
-                            Tùy Chỉnh Xáo Trộn Tổng Thể
+                            Tùy Chỉnh Xáo Trộn Các Phần Lớn (Toàn Cục)
                         </h2>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Hoán đổi vị trí các Phần -->
-                            <div class="flex flex-col p-4 bg-indigo-50 border border-indigo-100 rounded-lg">
-                                <div class="text-sm font-bold text-indigo-900 border-b border-indigo-200 pb-2 mb-3">1. CHO PHÉP HOÁN ĐỔI VỊ TRÍ PHẦN LỚN</div>
-                                <p class="text-[11px] text-indigo-700 mb-3 leading-relaxed">Chọn các Phần được quyền đổi chỗ cho nhau (Vd: Chọn Phần 2, 3 thì chỉ 2 phần này hoán vị, Phần 1 đứng im).</p>
-                                
-                                <div class="flex flex-col space-y-2">
-                                    <label class="inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" id="swap-p1" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm font-medium text-slate-700">Phần I</span>
-                                    </label>
-                                    <label class="inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" id="swap-p2" checked class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm font-medium text-slate-700">Phần II</span>
-                                    </label>
-                                    <label class="inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" id="swap-p3" checked class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm font-medium text-slate-700">Phần III</span>
-                                    </label>
-                                </div>
+                        <div class="flex flex-col p-4 bg-indigo-50 border border-indigo-100 rounded-lg">
+                            <p class="text-sm font-semibold text-indigo-900 mb-2">Cho phép HOÁN ĐỔI VỊ TRÍ các Phần với nhau:</p>
+                            <div class="flex flex-wrap items-center gap-6">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="swap-p1" class="w-5 h-5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+                                    <span class="ml-2 text-sm font-bold text-slate-700">Phần I</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="swap-p2" checked class="w-5 h-5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+                                    <span class="ml-2 text-sm font-bold text-slate-700">Phần II</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="swap-p3" checked class="w-5 h-5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+                                    <span class="ml-2 text-sm font-bold text-slate-700">Phần III</span>
+                                </label>
                             </div>
-
-                            <!-- Đảo các bài bên trong -->
-                            <div class="flex flex-col p-4 bg-emerald-50 border border-emerald-100 rounded-lg">
-                                <div class="text-sm font-bold text-emerald-900 border-b border-emerald-200 pb-2 mb-3">2. ĐẢO DẠNG BÀI/KHỐI CÂU HỎI TRONG PHẦN</div>
-                                <p class="text-[11px] text-emerald-700 mb-3 leading-relaxed">Chọn Phần sẽ xáo trộn thứ tự các đoạn văn/khối bài tập bên trong nó.</p>
-                                
-                                <div class="flex flex-col space-y-2">
-                                    <label class="inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" id="shuf-block-p1" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
-                                        <span class="ml-2 text-sm font-medium text-slate-700">Bên trong Phần I</span>
-                                    </label>
-                                    <label class="inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" id="shuf-block-p2" checked class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
-                                        <span class="ml-2 text-sm font-medium text-slate-700">Bên trong Phần II</span>
-                                    </label>
-                                    <label class="inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" id="shuf-block-p3" checked class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
-                                        <span class="ml-2 text-sm font-medium text-slate-700">Bên trong Phần III</span>
-                                    </label>
-                                </div>
-                            </div>
+                            <p class="text-xs text-indigo-700 mt-2 italic">VD: Nếu chỉ check Phần II và III, thì Phần I luôn cố định đứng đầu, còn Phần II và Phần III sẽ đổi chỗ ngẫu nhiên cho nhau.</p>
                         </div>
                     </div>
                     
-                    <div id="parts-container" class="p-4 overflow-y-auto custom-scroll flex-1 max-h-[500px] bg-slate-100">
+                    <!-- Vùng chứa chi tiết cấu hình các phần -->
+                    <div id="parts-container" class="p-5 overflow-y-auto custom-scroll flex-1 max-h-[600px] bg-slate-100 space-y-6">
                         <div class="flex h-full items-center justify-center text-slate-400 text-sm flex-col space-y-2">
                             <svg class="w-12 h-12 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                            <p>Vui lòng nạp và phân tích đề gốc để hiển thị chi tiết các khối.</p>
+                            <p>Vui lòng nạp và phân tích đề gốc để hiển thị chi tiết cấu trúc phần thi.</p>
                         </div>
                     </div>
                 </div>
@@ -275,13 +251,12 @@ def copy_ppr(new_paragraph, source_paragraph, force_compact=True):
     if src_ppr is not None:
         new_ppr = copy.deepcopy(src_ppr)
         
-        # CORE FIX: Ép định dạng thu gọn nhất (Xóa space before/after, chuẩn hóa line spacing)
+        # CORE FIX: Ép định dạng thu gọn nhất
         if force_compact:
             spacing = new_ppr.find(qn('w:spacing'))
             if spacing is None:
                 spacing = OxmlElement('w:spacing')
                 new_ppr.append(spacing)
-            # Ép margins đoạn văn về 0
             spacing.set(qn('w:before'), "0")
             spacing.set(qn('w:after'), "0")
             spacing.set(qn('w:line'), "240") # 1.0 (Single) line spacing
@@ -724,7 +699,7 @@ def shuffle_plan(parsed, parts, opts, rng=None):
     part3_blocks = [b for b in non_lis_blocks if b["main_part"] == 3]
     other_blocks = [b for b in non_lis_blocks if b["main_part"] not in (1, 2, 3)]
 
-    # Đảo khối bên trong mỗi phần lớn (có tính toán nút Ghim Khối)
+    # Đảo khối bên trong mỗi phần lớn theo Toggle riêng của từng phần
     if opts.get("shuf_block_p1", False): part1_blocks = shuffle_group_with_pins(part1_blocks, rng, opts)
     if opts.get("shuf_block_p2", False): part2_blocks = shuffle_group_with_pins(part2_blocks, rng, opts)
     if opts.get("shuf_block_p3", False): part3_blocks = shuffle_group_with_pins(part3_blocks, rng, opts)
@@ -1147,70 +1122,112 @@ def generate_shuffled(options_json):
 
     function renderPartsUI(parts) {
         const container = document.getElementById('parts-container');
-        container.innerHTML = '';
         window.currentParts = parts;
         
-        parts.forEach((part, index) => {
-            const isListening = !!part.is_listening;
-            let lockState = part.is_cloze || isListening;
-            
-            let lockIcon = isListening
-                ? `<svg class="w-4 h-4 text-sky-600 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg><span class="text-xs font-bold text-sky-700 bg-sky-50 px-2 py-1 rounded">Listening: Khóa</span>`
-                : lockState 
-                ? `<svg class="w-4 h-4 text-red-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg><span class="text-xs font-bold text-red-500 bg-red-50 px-2 py-1 rounded">Cố định thứ tự câu</span>`
-                : `<svg class="w-4 h-4 text-emerald-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg><span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Cho phép đảo câu</span>`;
-
-            let toggleDisabled = lockState ? "disabled" : "";
-            let toggleOpacity = lockState ? "opacity-40 cursor-not-allowed" : "cursor-pointer";
-            let mainPartBadge = part.main_part ? `<span class="ml-2 text-[10px] font-bold text-indigo-700 bg-indigo-100 border border-indigo-200 px-2 py-0.5 rounded-full tracking-wider align-middle">PART ${part.main_part}</span>` : '';
-
-            container.innerHTML += `
-                <div class="mb-4 bg-white border ${isListening ? 'border-sky-300' : 'border-slate-200'} rounded-lg p-4 shadow-sm hover:shadow-md transition duration-200">
-                    <div class="flex justify-between items-start mb-3">
-                        <div class="flex-1 pr-4">
-                            <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide flex flex-wrap items-center gap-1">
-                                <span>Khối: CÂU ${part.q_from} - ${part.q_to}</span>
-                                ${mainPartBadge}
-                                ${isListening ? '<span class="text-[10px] font-bold text-sky-700 bg-sky-100 border border-sky-200 px-2 py-0.5 rounded-full tracking-wider">LISTENING</span>' : ''}
-                            </h3>
-                            <p class="text-sm text-slate-500 line-clamp-2 italic mt-1 bg-slate-50 p-2 rounded border-l-2 border-slate-300" title="${part.label}">"${part.label}"</p>
-                        </div>
-                        <div class="flex items-center whitespace-nowrap">
-                            ${lockIcon}
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center space-x-6 border-t border-slate-100 pt-3 flex-wrap gap-y-3">
-                        <label class="flex items-center space-x-2 cursor-pointer">
-                            <div class="relative">
-                                <input type="checkbox" id="opt-opts-${index}" checked class="sr-only toggle-checkbox">
-                                <div class="block bg-slate-200 w-8 h-5 rounded-full toggle-label transition"></div>
-                                <div class="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform toggle-dot"></div>
-                            </div>
-                            <span class="text-sm font-medium text-slate-700">Xáo phương án (A,B,C,D)</span>
-                        </label>
-
-                        <label class="flex items-center space-x-2 ${toggleOpacity}">
-                            <div class="relative">
-                                <input type="checkbox" id="opt-order-${index}" ${!lockState ? 'checked' : ''} ${toggleDisabled} class="sr-only toggle-checkbox">
-                                <div class="block bg-slate-200 w-8 h-5 rounded-full toggle-label transition"></div>
-                                <div class="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform toggle-dot"></div>
-                            </div>
-                            <span class="text-sm font-medium ${lockState ? 'text-slate-400' : 'text-slate-700'}">Đảo câu (Nội bộ)</span>
-                        </label>
-                        
-                        <label class="flex items-center space-x-2 ${isListening ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}">
-                            <div class="relative">
-                                <input type="checkbox" id="opt-pin-${index}" ${isListening ? 'checked disabled' : ''} class="sr-only toggle-checkbox pin-toggle">
-                                <div class="block bg-slate-200 w-8 h-5 rounded-full toggle-label transition"></div>
-                                <div class="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform toggle-dot"></div>
-                            </div>
-                            <span class="text-sm font-medium ${isListening ? 'text-slate-400' : 'text-orange-600'}">Ghim bài (Không đổi chỗ khối này)</span>
-                        </label>
-                    </div>
-                </div>
-            `;
+        // Phân rã các phần vào nhóm tương ứng
+        const groups = { 1: [], 2: [], 3: [], other: [] };
+        parts.forEach((p, idx) => {
+            p.originalIndex = idx;
+            if (p.is_listening) groups.other.push(p);
+            else if (p.main_part === 1) groups[1].push(p);
+            else if (p.main_part === 2) groups[2].push(p);
+            else if (p.main_part === 3) groups[3].push(p);
+            else groups.other.push(p);
         });
+
+        function generateGroupHTML(title, groupParts, shufCheckboxId, isDefaultShuf) {
+            if (groupParts.length === 0) return '';
+            
+            let html = `
+                <div class="mb-6 rounded-xl border border-slate-300 overflow-hidden shadow-sm bg-white">
+                    <div class="bg-slate-200 px-4 py-3 flex flex-wrap justify-between items-center border-b border-slate-300 gap-2">
+                        <h3 class="font-bold text-slate-800 uppercase tracking-wide">${title}</h3>
+                        ${shufCheckboxId ? `
+                        <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-1.5 rounded shadow-sm border border-slate-300 hover:bg-slate-50 transition">
+                            <input type="checkbox" id="${shufCheckboxId}" ${isDefaultShuf ? 'checked' : ''} class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                            <span class="text-xs font-bold text-emerald-700 uppercase">Đảo vị trí các bài bên trong</span>
+                        </label>
+                        ` : ''}
+                    </div>
+                    <div class="p-4 space-y-4">
+            `;
+
+            groupParts.forEach(part => {
+                const index = part.originalIndex;
+                const isListening = !!part.is_listening;
+                let lockState = part.is_cloze || isListening;
+                
+                let lockIcon = isListening
+                    ? `<span class="text-[11px] font-bold text-sky-700 bg-sky-50 border border-sky-200 px-2 py-1 rounded">Listening (Chỉ đảo đáp án)</span>`
+                    : lockState 
+                    ? `<span class="text-[11px] font-bold text-red-500 bg-red-50 border border-red-200 px-2 py-1 rounded">Cố định thứ tự câu hỏi</span>`
+                    : `<span class="text-[11px] font-medium text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded">Câu hỏi được phép đảo</span>`;
+
+                let toggleDisabled = lockState ? "disabled" : "";
+                let toggleOpacity = lockState ? "opacity-40 cursor-not-allowed" : "cursor-pointer";
+
+                html += `
+                    <div class="border ${isListening ? 'border-sky-300 bg-sky-50/30' : 'border-slate-200'} rounded-lg p-3 hover:shadow-md transition duration-200">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex-1 pr-4">
+                                <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                    Khối: CÂU ${part.q_from} - ${part.q_to}
+                                    ${lockIcon}
+                                </h4>
+                                <p class="text-xs text-slate-500 line-clamp-1 italic mt-1" title="${part.label}">"${part.label}"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-slate-100 pt-3">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <div class="relative">
+                                    <input type="checkbox" id="opt-opts-${index}" checked class="sr-only toggle-checkbox">
+                                    <div class="block bg-slate-200 w-8 h-5 rounded-full toggle-label transition"></div>
+                                    <div class="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform toggle-dot"></div>
+                                </div>
+                                <span class="text-xs font-medium text-slate-700">Xáo phương án (A,B,C,D)</span>
+                            </label>
+
+                            <label class="flex items-center space-x-2 ${toggleOpacity}">
+                                <div class="relative">
+                                    <input type="checkbox" id="opt-order-${index}" ${!lockState ? 'checked' : ''} ${toggleDisabled} class="sr-only toggle-checkbox">
+                                    <div class="block bg-slate-200 w-8 h-5 rounded-full toggle-label transition"></div>
+                                    <div class="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform toggle-dot"></div>
+                                </div>
+                                <span class="text-xs font-medium ${lockState ? 'text-slate-400' : 'text-slate-700'}">Đảo câu (Nội bộ)</span>
+                            </label>
+                            
+                            <label class="flex items-center space-x-2 ${isListening ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}">
+                                <div class="relative">
+                                    <input type="checkbox" id="opt-pin-${index}" ${isListening ? 'checked disabled' : ''} class="sr-only toggle-checkbox pin-toggle">
+                                    <div class="block bg-slate-200 w-8 h-5 rounded-full toggle-label transition"></div>
+                                    <div class="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform toggle-dot"></div>
+                                </div>
+                                <span class="text-xs font-medium ${isListening ? 'text-slate-400' : 'text-orange-600'}">Ghim bài này (Cố định vị trí)</span>
+                            </label>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+            return html;
+        }
+
+        let finalHtml = '';
+        finalHtml += generateGroupHTML('🎧 Phần Nghe (Listening)', groups.other.filter(p => p.is_listening), null, false);
+        finalHtml += generateGroup('🏷️ Khối không xác định', groups.other.filter(p => !p.is_listening), null, false);
+        finalHtml += generateGroupHTML('📑 PHẦN I', groups[1], 'shuf-block-p1', false);
+        finalHtml += generateGroupHTML('📑 PHẦN II', groups[2], 'shuf-block-p2', true);
+        finalHtml += generateGroupHTML('📑 PHẦN III', groups[3], 'shuf-block-p3', true);
+        
+        container.innerHTML = finalHtml;
+    }
+
+    function generateGroup(title, groupParts, shufCheckboxId, isDefaultShuf) {
+        if(groupParts.length === 0) return '';
+        // (Thực tế nhóm unknown chỉ gọi helper fallback, logic chính nằm ở generateGroupHTML)
+        return ''; 
     }
 
     let TRIAL_LIMIT = 10;
@@ -1218,24 +1235,13 @@ def generate_shuffled(options_json):
     const TRIAL_COUNT_KEY = "dmd_trial_count";
     const LIMIT_KEY = "dmd_limit_count"; 
 
-    function getTrialCount() {
-        return parseInt(localStorage.getItem(TRIAL_COUNT_KEY) || '0', 10) || 0;
-    }
-    
+    function getTrialCount() { return parseInt(localStorage.getItem(TRIAL_COUNT_KEY) || '0', 10) || 0; }
     function getLimitCount() {
         const storedLimit = localStorage.getItem(LIMIT_KEY);
-        if (storedLimit === null) {
-            localStorage.setItem(LIMIT_KEY, TRIAL_LIMIT.toString());
-            return TRIAL_LIMIT;
-        }
+        if (storedLimit === null) { localStorage.setItem(LIMIT_KEY, TRIAL_LIMIT.toString()); return TRIAL_LIMIT; }
         return parseInt(storedLimit, 10);
     }
-
-    function markUsageIfNeeded() {
-        localStorage.setItem(TRIAL_COUNT_KEY, String(getTrialCount() + 1));
-        updateTrialUI();
-    }
-
+    function markUsageIfNeeded() { localStorage.setItem(TRIAL_COUNT_KEY, String(getTrialCount() + 1)); updateTrialUI(); }
     function updateTrialUI() {
         const el = document.getElementById('trial-status');
         if (!el) return;
@@ -1244,26 +1250,20 @@ def generate_shuffled(options_json):
         const remaining = Math.max(0, limit - count);
         el.textContent = `Còn ${remaining}/${limit} lượt dùng thử miễn phí.`;
     }
-
     function showTrialModal() {
         document.getElementById('trial-password-error').classList.add('hidden');
         document.getElementById('trial-password-input').value = '';
         const modal = document.getElementById('trial-modal');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+        modal.classList.remove('hidden'); modal.classList.add('flex');
         document.getElementById('trial-password-input').focus();
     }
-
     function hideTrialModal() {
         const modal = document.getElementById('trial-modal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
+        modal.classList.add('hidden'); modal.classList.remove('flex');
     }
-
     function checkTrialAccess() {
         if (getTrialCount() < getLimitCount()) return true;
-        showTrialModal();
-        return false;
+        showTrialModal(); return false;
     }
 
     document.getElementById('trial-confirm-btn').addEventListener('click', function() {
@@ -1271,20 +1271,17 @@ def generate_shuffled(options_json):
         if (input === TRIAL_PASSWORD) {
             let currentLimit = getLimitCount();
             localStorage.setItem(LIMIT_KEY, (currentLimit + 10).toString());
-            hideTrialModal();
-            updateTrialUI();
+            hideTrialModal(); updateTrialUI();
             alert("Mật khẩu chính xác. Bạn đã được cộng thêm 10 lượt dùng thử.");
             shuffleAndExport();
         } else {
             document.getElementById('trial-password-error').classList.remove('hidden');
         }
     });
-
     document.getElementById('trial-cancel-btn').addEventListener('click', hideTrialModal);
     document.getElementById('trial-password-input').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') document.getElementById('trial-confirm-btn').click();
     });
-
     updateTrialUI();
 
     async function shuffleAndExport() {
@@ -1297,12 +1294,8 @@ def generate_shuffled(options_json):
         try {
             const numMade = parseInt(document.getElementById('num-made').value, 10);
             const startCode = parseInt(document.getElementById('start-code').value, 10);
-            if (!Number.isInteger(numMade) || numMade < 1) {
-                throw new Error("Số lượng mã đề không hợp lệ. Vui lòng nhập một số nguyên từ 1 trở lên.");
-            }
-            if (!Number.isInteger(startCode) || startCode < 0) {
-                throw new Error("Mã đề bắt đầu không hợp lệ. Vui lòng nhập một số nguyên hợp lệ.");
-            }
+            if (!Number.isInteger(numMade) || numMade < 1) throw new Error("Số lượng mã đề không hợp lệ.");
+            if (!Number.isInteger(startCode) || startCode < 0) throw new Error("Mã đề bắt đầu không hợp lệ.");
 
             let opts = {
                 num_ma_de: numMade,
@@ -1313,9 +1306,9 @@ def generate_shuffled(options_json):
                 swap_p2: document.getElementById('swap-p2').checked,
                 swap_p3: document.getElementById('swap-p3').checked,
                 
-                shuf_block_p1: document.getElementById('shuf-block-p1').checked,
-                shuf_block_p2: document.getElementById('shuf-block-p2').checked,
-                shuf_block_p3: document.getElementById('shuf-block-p3').checked,
+                shuf_block_p1: document.getElementById('shuf-block-p1') ? document.getElementById('shuf-block-p1').checked : false,
+                shuf_block_p2: document.getElementById('shuf-block-p2') ? document.getElementById('shuf-block-p2').checked : false,
+                shuf_block_p3: document.getElementById('shuf-block-p3') ? document.getElementById('shuf-block-p3').checked : false,
                 
                 sample_margins: document.getElementById('sample-margins').checked
             };
