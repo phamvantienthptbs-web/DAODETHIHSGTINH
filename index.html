@@ -11,12 +11,12 @@
     <style>
         .toggle-checkbox:checked { right: 0; border-color: #10b981; }
         .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
+        .pin-toggle:checked + .toggle-label { background-color: #ea580c; border-color: #ea580c; }
+        
         .custom-scroll::-webkit-scrollbar { width: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .toggle-checkbox:checked + .toggle-label + .toggle-dot { transform: translateX(100%); }
-        #cb-shuffle-part23:checked + .toggle-label + .toggle-dot { transform: translateX(100%); }
-        #cb-shuffle-blocks-p23:checked + .toggle-label + .toggle-dot { transform: translateX(100%); }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
@@ -78,7 +78,7 @@
                                     <div class="block bg-slate-200 w-10 h-6 rounded-full toggle-label transition"></div>
                                     <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform toggle-dot"></div>
                                 </div>
-                                <span class="text-sm font-medium text-slate-700">Căn lề theo đề mẫu<span class="block text-[11px] text-slate-500">A4 · trên 0,78 · dưới 0,70 · trái 1,41 · phải 1,25 cm</span></span>
+                                <span class="text-sm font-medium text-slate-700">Căn lề chuẩn (A4 siêu tiết kiệm giấy)</span>
                             </label>
                         </div>
 
@@ -107,41 +107,58 @@
                     <div class="p-6 border-b border-slate-200 bg-slate-50 rounded-t-xl">
                         <h2 class="text-lg font-bold text-slate-800 flex items-center mb-4">
                             <span class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full inline-flex items-center justify-center mr-2 text-sm">2</span>
-                            Cấu Hình Xáo Trộn Chi Tiết
+                            Tùy Chỉnh Xáo Trộn Tổng Thể
                         </h2>
-                        <div class="flex flex-col p-4 bg-indigo-50 border border-indigo-100 rounded-lg space-y-4">
-                            <div class="text-sm font-bold text-indigo-900 border-b border-indigo-200 pb-2">CẤU HÌNH PHẦN II & PHẦN III</div>
-                            
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <div class="relative">
-                                    <input type="checkbox" id="cb-shuffle-part23" class="sr-only toggle-checkbox">
-                                    <div class="block bg-slate-300 w-10 h-6 rounded-full toggle-label transition"></div>
-                                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform toggle-dot"></div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Hoán đổi vị trí các Phần -->
+                            <div class="flex flex-col p-4 bg-indigo-50 border border-indigo-100 rounded-lg">
+                                <div class="text-sm font-bold text-indigo-900 border-b border-indigo-200 pb-2 mb-3">1. CHO PHÉP HOÁN ĐỔI VỊ TRÍ PHẦN LỚN</div>
+                                <p class="text-[11px] text-indigo-700 mb-3 leading-relaxed">Chọn các Phần được quyền đổi chỗ cho nhau (Vd: Chọn Phần 2, 3 thì chỉ 2 phần này hoán vị, Phần 1 đứng im).</p>
+                                
+                                <div class="flex flex-col space-y-2">
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="swap-p1" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+                                        <span class="ml-2 text-sm font-medium text-slate-700">Phần I</span>
+                                    </label>
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="swap-p2" checked class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+                                        <span class="ml-2 text-sm font-medium text-slate-700">Phần II</span>
+                                    </label>
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="swap-p3" checked class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+                                        <span class="ml-2 text-sm font-medium text-slate-700">Phần III</span>
+                                    </label>
                                 </div>
-                                <span class="font-medium text-indigo-900 text-sm">Đảo vị trí Phần II và Phần III cho nhau (Toàn cục)</span>
-                            </label>
-                            
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <div class="relative">
-                                    <input type="checkbox" id="cb-shuffle-blocks-p23" checked class="sr-only toggle-checkbox">
-                                    <div class="block bg-slate-300 w-10 h-6 rounded-full toggle-label transition"></div>
-                                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform toggle-dot"></div>
+                            </div>
+
+                            <!-- Đảo các bài bên trong -->
+                            <div class="flex flex-col p-4 bg-emerald-50 border border-emerald-100 rounded-lg">
+                                <div class="text-sm font-bold text-emerald-900 border-b border-emerald-200 pb-2 mb-3">2. ĐẢO DẠNG BÀI/KHỐI CÂU HỎI TRONG PHẦN</div>
+                                <p class="text-[11px] text-emerald-700 mb-3 leading-relaxed">Chọn Phần sẽ xáo trộn thứ tự các đoạn văn/khối bài tập bên trong nó.</p>
+                                
+                                <div class="flex flex-col space-y-2">
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="shuf-block-p1" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                                        <span class="ml-2 text-sm font-medium text-slate-700">Bên trong Phần I</span>
+                                    </label>
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="shuf-block-p2" checked class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                                        <span class="ml-2 text-sm font-medium text-slate-700">Bên trong Phần II</span>
+                                    </label>
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="shuf-block-p3" checked class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                                        <span class="ml-2 text-sm font-medium text-slate-700">Bên trong Phần III</span>
+                                    </label>
                                 </div>
-                                <span class="font-medium text-indigo-900 text-sm">Đảo các dạng bài / khối câu hỏi bên trong Phần II, Phần III</span>
-                            </label>
-                            
-                            <div class="text-xs text-indigo-800 mt-2 bg-indigo-100/50 p-3 rounded-lg leading-relaxed">
-                                <b>Quy tắc tự động:</b><br>
-                                • <span class="text-red-600 font-semibold">Phần I:</span> Mặc định luôn cố định ở đầu đề, cố định vị trí các bài bên trong, cố định thứ tự câu (chỉ cho phép xáo đáp án).<br>
-                                • <span class="text-emerald-700 font-semibold">Phần II & III:</span> Áp dụng đảo/cố định dạng bài, câu hỏi, đáp án theo cấu hình trên và dưới.
                             </div>
                         </div>
                     </div>
                     
-                    <div id="parts-container" class="p-4 overflow-y-auto custom-scroll flex-1 max-h-[500px]">
+                    <div id="parts-container" class="p-4 overflow-y-auto custom-scroll flex-1 max-h-[500px] bg-slate-100">
                         <div class="flex h-full items-center justify-center text-slate-400 text-sm flex-col space-y-2">
                             <svg class="w-12 h-12 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                            <p>Vui lòng nạp và phân tích đề gốc để hiển thị các phần.</p>
+                            <p>Vui lòng nạp và phân tích đề gốc để hiển thị chi tiết các khối.</p>
                         </div>
                     </div>
                 </div>
@@ -157,7 +174,8 @@ import random
 from docx import Document
 from docx.oxml.ns import qn
 from docx.text.run import Run as _DocxRun
-from docx.shared import Twips
+from docx.shared import Twips, Pt
+from docx.oxml import OxmlElement
 
 QUESTION_RE = re.compile(r'Question\s+(\d+)\s*[\.:]', re.IGNORECASE)
 PART_RE = re.compile(r'(?:from|câu(?: hỏi)?|questions?)?\s*(\d+)\.?\s*(?:to|-|đến)\s*(?:câu(?: hỏi)?|questions?)?\s*(\d+)\.?', re.IGNORECASE)
@@ -165,7 +183,6 @@ OPTION_START_RE = re.compile(r'^\s*([ABCD])\.\s')
 INLINE_OPTIONS_RE = re.compile(r'(?P<A>A\.\s.*?)(?=\t?\s*B\.\s)\t?\s*(?P<B>B\.\s.*?)(?=\t?\s*C\.\s)\t?\s*(?P<C>C\.\s.*?)(?=\t?\s*D\.\s)\t?\s*(?P<D>D\.\s.*)$', re.DOTALL)
 CIRCLED = {"A": "\u24B6", "B": "\u24B7", "C": "\u24B8", "D": "\u24B9"} 
 
-# ---------------- NHẬN DIỆN PHẦN LỚN (PART I, PART II, PART III) ----------------
 MAIN_PART_RE = re.compile(r'^\s*(?:PART|PHẦN)\s+(I{1,3}|[123])\b', re.IGNORECASE)
 
 def _get_main_part(text):
@@ -178,7 +195,6 @@ def _get_main_part(text):
         if val in ('III', '3'): return 3
     return None
 
-# ---------------- NHẬN DIỆN PHẦN NGHE (LISTENING) ----------------
 _LH_PREFIX = r'(?:(?:PHẦN|Phần|PART|Part|SECTION|Section)\s*(?:[IVX]+|\d+|[A-D])\s*[\.\:\-–—\)]*\s*|(?:[IVX]+|\d+|[A-D])\s*[\.\)\:\-–—]+\s*)'
 LISTENING_RE = re.compile(r'^\s*(?P<pre>' + _LH_PREFIX + r')?(?P<word>LISTENING|Listening)\b')
 PHAN_HEAD_RE = re.compile(r'^\s*PHẦN\s+(?:[IVX]+|\d+)\b', re.IGNORECASE)
@@ -254,10 +270,23 @@ def copy_rpr(new_run, source_run, strip_underline=False):
         if old is not None: new_run._r.remove(old)
         new_run._r.insert(0, new_rpr)
 
-def copy_ppr(new_paragraph, source_paragraph):
+def copy_ppr(new_paragraph, source_paragraph, force_compact=True):
     src_ppr = source_paragraph._p.find(qn('w:pPr'))
     if src_ppr is not None:
         new_ppr = copy.deepcopy(src_ppr)
+        
+        # CORE FIX: Ép định dạng thu gọn nhất (Xóa space before/after, chuẩn hóa line spacing)
+        if force_compact:
+            spacing = new_ppr.find(qn('w:spacing'))
+            if spacing is None:
+                spacing = OxmlElement('w:spacing')
+                new_ppr.append(spacing)
+            # Ép margins đoạn văn về 0
+            spacing.set(qn('w:before'), "0")
+            spacing.set(qn('w:after'), "0")
+            spacing.set(qn('w:line'), "240") # 1.0 (Single) line spacing
+            spacing.set(qn('w:lineRule'), "auto")
+            
         old = new_paragraph._p.find(qn('w:pPr'))
         if old is not None: new_paragraph._p.remove(old)
         new_paragraph._p.insert(0, new_ppr)
@@ -448,7 +477,7 @@ def detect_parts(parsed):
     current_q_from = None
     last_seen_q = None
     has_explicit_lock = False
-    current_main_part = 1 # Mặc định bắt đầu từ Part 1
+    current_main_part = 1
     
     def flush_part(q_to):
         nonlocal current_label, current_q_from, has_explicit_lock, current_main_part
@@ -474,7 +503,6 @@ def detect_parts(parsed):
             text = "".join(seg[0] for seg in spec.segments).strip()
             if not text: continue
             
-            # Nhận diện Phần I, Phần II, Phần III
             mp = _get_main_part(text)
             if mp:
                 flush_part(last_seen_q)
@@ -616,6 +644,20 @@ def detect_parts(parsed):
 
     return final_parts
 
+def shuffle_group_with_pins(group_blocks, rng, opts):
+    if not group_blocks: return []
+    pins = [opts.get(b["part_idx"], {}).get("pin_block", False) for b in group_blocks]
+    unpinned = [b for i, b in enumerate(group_blocks) if not pins[i]]
+    rng.shuffle(unpinned)
+    res = []
+    uidx = 0
+    for i, b in enumerate(group_blocks):
+        if pins[i]: res.append(b)
+        else:
+            res.append(unpinned[uidx])
+            uidx += 1
+    return res
+
 def shuffle_plan(parsed, parts, opts, rng=None):
     if rng is None: rng = random
     qmap = {q.number: q for q in parsed["questions"]}
@@ -670,12 +712,10 @@ def shuffle_plan(parsed, parts, opts, rng=None):
                 else: block["specs_internal"][q_num] = parsed["fillers_after"].get(q_num, [])
             else: block["specs_internal"][q_num] = parsed["fillers_after"].get(q_num, [])
                 
-    # Gắn nhãn Main Part cho từng block
     for block in blocks:
         p_idx = block["part_idx"]
         block["main_part"] = parts[p_idx].get("main_part", 1) if p_idx is not None else 1
 
-    # Phân loại khối
     lis_blocks = [b for b in blocks if b["part_idx"] is not None and parts[b["part_idx"]].get("is_listening")]
     non_lis_blocks = [b for b in blocks if b not in lis_blocks]
 
@@ -684,23 +724,33 @@ def shuffle_plan(parsed, parts, opts, rng=None):
     part3_blocks = [b for b in non_lis_blocks if b["main_part"] == 3]
     other_blocks = [b for b in non_lis_blocks if b["main_part"] not in (1, 2, 3)]
 
-    # Đảo các dạng bài/khối bên trong Part II và Part III
-    if opts.get("shuffle_blocks_p23", False):
-        rng.shuffle(part2_blocks)
-        rng.shuffle(part3_blocks)
-        rng.shuffle(other_blocks)
+    # Đảo khối bên trong mỗi phần lớn (có tính toán nút Ghim Khối)
+    if opts.get("shuf_block_p1", False): part1_blocks = shuffle_group_with_pins(part1_blocks, rng, opts)
+    if opts.get("shuf_block_p2", False): part2_blocks = shuffle_group_with_pins(part2_blocks, rng, opts)
+    if opts.get("shuf_block_p3", False): part3_blocks = shuffle_group_with_pins(part3_blocks, rng, opts)
 
-    # Đảo vị trí Part II và Part III
-    if opts.get("shuffle_part23", False):
-        if rng.choice([True, False]):
-            p23_blocks = part3_blocks + part2_blocks
-        else:
-            p23_blocks = part2_blocks + part3_blocks
-    else:
-        p23_blocks = part2_blocks + part3_blocks
+    # Hoán đổi vị trí các phần lớn I, II, III
+    main_parts = [(1, part1_blocks), (2, part2_blocks), (3, part3_blocks)]
+    swappable_indices = []
+    swappable_items = []
+    
+    allow_swap = {1: opts.get("swap_p1", False), 2: opts.get("swap_p2", False), 3: opts.get("swap_p3", False)}
+    
+    for idx, (p_num, p_blocks) in enumerate(main_parts):
+        if allow_swap.get(p_num, False):
+            swappable_indices.append(idx)
+            swappable_items.append((p_num, p_blocks))
+            
+    if len(swappable_items) > 1:
+        rng.shuffle(swappable_items)
+        for i, target_idx in enumerate(swappable_indices):
+            main_parts[target_idx] = swappable_items[i]
+            
+    final_p1_blocks = main_parts[0][1]
+    final_p2_blocks = main_parts[1][1]
+    final_p3_blocks = main_parts[2][1]
 
-    # Lắp ráp lại toàn đề: Listening -> Part 1 -> Part 2 & 3 -> Khác
-    blocks = lis_blocks + part1_blocks + p23_blocks + other_blocks
+    blocks = lis_blocks + final_p1_blocks + final_p2_blocks + final_p3_blocks + other_blocks
         
     option_perm = {}
     for q_num, q in qmap.items(): option_perm[q_num] = list(q.options)
@@ -718,8 +768,8 @@ def shuffle_plan(parsed, parts, opts, rng=None):
                         rng.shuffle(order)
                         option_perm[q_num] = [qmap[q_num].options[idx] for idx in order]
                         
-            # ẤN ĐỊNH: Tuyệt đối KHÔNG đảo câu hỏi nếu thuộc Phần I (main_part == 1)
-            if block["main_part"] != 1 and cfg.get("shuffle_order") and not part_info["is_cloze"] and not part_info.get("is_listening") and len(block["qnums"]) > 1:
+            # Đảo câu nội bộ bên trong 1 khối
+            if cfg.get("shuffle_order") and not part_info["is_cloze"] and not part_info.get("is_listening") and len(block["qnums"]) > 1:
                 rng.shuffle(block["qnums"])
                 
     new_order = []
@@ -741,7 +791,7 @@ def _copy_seg_run(paragraph, seg, new_number_str=None, mapper=None):
 
 def _emit_plain_paragraph(doc, spec, mapper=None):
     p = doc.add_paragraph()
-    copy_ppr(p, spec.source_paragraph)
+    copy_ppr(p, spec.source_paragraph, force_compact=True)
     for seg in spec.segments: 
         _copy_seg_run(p, seg, mapper=mapper)
     return p
@@ -849,7 +899,7 @@ def _emit_header_line(doc, parsed, header_line):
     p = doc.add_paragraph()
     run = p.add_run(header_line)
     if src is not None:
-        copy_ppr(p, src.source_paragraph)
+        copy_ppr(p, src.source_paragraph, force_compact=True)
         ppr = p._p.find(qn('w:pPr'))
         if ppr is not None:
             for tag in ('w:numPr', 'w:outlineLvl', 'w:jc', 'w:ind'):
@@ -888,7 +938,7 @@ def render_exam_docx(parsed, global_header, blocks, option_perm, number_str_map,
             
             if q.options_mode == 'inline_with_marker':
                 p = doc.add_paragraph()
-                copy_ppr(p, q.stem_paragraphs[0].source_paragraph)
+                copy_ppr(p, q.stem_paragraphs[0].source_paragraph, force_compact=True)
                 for seg in q.stem_paragraphs[0].segments: 
                     _copy_seg_run(p, seg, new_number_str=new_num_str)
                 gaps = _gap_list(q)
@@ -898,12 +948,12 @@ def render_exam_docx(parsed, global_header, blocks, option_perm, number_str_map,
             else:
                 for sp in q.stem_paragraphs:
                     p = doc.add_paragraph()
-                    copy_ppr(p, sp.source_paragraph)
+                    copy_ppr(p, sp.source_paragraph, force_compact=True)
                     for seg in sp.segments: 
                         _copy_seg_run(p, seg, new_number_str=new_num_str)
                 if q.options_mode == 'same_line':
                     p = doc.add_paragraph()
-                    copy_ppr(p, q.options_ppr_source)
+                    copy_ppr(p, q.options_ppr_source, force_compact=True)
                     gaps = _gap_list(q)
                     for i, opt in enumerate(opts):
                         if i > 0: _emit_gap(p, gaps[i - 1], opt)
@@ -911,7 +961,7 @@ def render_exam_docx(parsed, global_header, blocks, option_perm, number_str_map,
                 elif q.options_mode == 'separate':
                     for i, opt in enumerate(opts):
                         p = doc.add_paragraph()
-                        copy_ppr(p, q.options_ppr_source)
+                        copy_ppr(p, q.options_ppr_source, force_compact=True)
                         _emit_option_run(p, opt, "ABCD"[i], True)
 
             for spec in block["specs_internal"].get(old_q_num, []): 
@@ -976,13 +1026,15 @@ def generate_shuffled(options_json):
     num_ma_de = opts.pop('num_ma_de', 4)
     start_code = opts.pop('start_code', 101)
     insert_header = opts.pop('insert_header', True)
-    shuffle_part23 = opts.pop('shuffle_part23', False)
-    shuffle_blocks_p23 = opts.pop('shuffle_blocks_p23', False)
     sample_margins = opts.pop('sample_margins', True)
     
     py_opts = {
-        "shuffle_part23": shuffle_part23,
-        "shuffle_blocks_p23": shuffle_blocks_p23
+        "swap_p1": opts.pop('swap_p1', False),
+        "swap_p2": opts.pop('swap_p2', False),
+        "swap_p3": opts.pop('swap_p3', False),
+        "shuf_block_p1": opts.pop('shuf_block_p1', False),
+        "shuf_block_p2": opts.pop('shuf_block_p2', False),
+        "shuf_block_p3": opts.pop('shuf_block_p3', False),
     }
     for k, v in opts.items():
         if k.isdigit(): py_opts[int(k)] = v
@@ -1100,13 +1152,10 @@ def generate_shuffled(options_json):
         
         parts.forEach((part, index) => {
             const isListening = !!part.is_listening;
-            const isPart1 = part.main_part === 1 && !isListening;
-            let lockState = part.is_cloze || isListening || isPart1;
+            let lockState = part.is_cloze || isListening;
             
             let lockIcon = isListening
                 ? `<svg class="w-4 h-4 text-sky-600 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg><span class="text-xs font-bold text-sky-700 bg-sky-50 px-2 py-1 rounded">Listening: Khóa</span>`
-                : isPart1
-                ? `<svg class="w-4 h-4 text-red-600 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg><span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded">Cố định bài & câu</span>`
                 : lockState 
                 ? `<svg class="w-4 h-4 text-red-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg><span class="text-xs font-bold text-red-500 bg-red-50 px-2 py-1 rounded">Cố định thứ tự câu</span>`
                 : `<svg class="w-4 h-4 text-emerald-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg><span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Cho phép đảo câu</span>`;
@@ -1116,7 +1165,7 @@ def generate_shuffled(options_json):
             let mainPartBadge = part.main_part ? `<span class="ml-2 text-[10px] font-bold text-indigo-700 bg-indigo-100 border border-indigo-200 px-2 py-0.5 rounded-full tracking-wider align-middle">PART ${part.main_part}</span>` : '';
 
             container.innerHTML += `
-                <div class="mb-4 bg-white border ${isListening ? 'border-sky-300' : isPart1 ? 'border-red-200' : part.explicit_lock ? 'border-red-200' : 'border-slate-200'} rounded-lg p-4 shadow-sm hover:shadow-md transition duration-200">
+                <div class="mb-4 bg-white border ${isListening ? 'border-sky-300' : 'border-slate-200'} rounded-lg p-4 shadow-sm hover:shadow-md transition duration-200">
                     <div class="flex justify-between items-start mb-3">
                         <div class="flex-1 pr-4">
                             <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide flex flex-wrap items-center gap-1">
@@ -1131,7 +1180,7 @@ def generate_shuffled(options_json):
                         </div>
                     </div>
                     
-                    <div class="flex items-center space-x-6 border-t border-slate-100 pt-3">
+                    <div class="flex items-center space-x-6 border-t border-slate-100 pt-3 flex-wrap gap-y-3">
                         <label class="flex items-center space-x-2 cursor-pointer">
                             <div class="relative">
                                 <input type="checkbox" id="opt-opts-${index}" checked class="sr-only toggle-checkbox">
@@ -1148,6 +1197,15 @@ def generate_shuffled(options_json):
                                 <div class="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform toggle-dot"></div>
                             </div>
                             <span class="text-sm font-medium ${lockState ? 'text-slate-400' : 'text-slate-700'}">Đảo câu (Nội bộ)</span>
+                        </label>
+                        
+                        <label class="flex items-center space-x-2 ${isListening ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}">
+                            <div class="relative">
+                                <input type="checkbox" id="opt-pin-${index}" ${isListening ? 'checked disabled' : ''} class="sr-only toggle-checkbox pin-toggle">
+                                <div class="block bg-slate-200 w-8 h-5 rounded-full toggle-label transition"></div>
+                                <div class="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform toggle-dot"></div>
+                            </div>
+                            <span class="text-sm font-medium ${isListening ? 'text-slate-400' : 'text-orange-600'}">Ghim bài (Không đổi chỗ khối này)</span>
                         </label>
                     </div>
                 </div>
@@ -1250,15 +1308,23 @@ def generate_shuffled(options_json):
                 num_ma_de: numMade,
                 start_code: startCode,
                 insert_header: document.getElementById('insert-header').checked,
-                shuffle_part23: document.getElementById('cb-shuffle-part23').checked,
-                shuffle_blocks_p23: document.getElementById('cb-shuffle-blocks-p23').checked,
+                
+                swap_p1: document.getElementById('swap-p1').checked,
+                swap_p2: document.getElementById('swap-p2').checked,
+                swap_p3: document.getElementById('swap-p3').checked,
+                
+                shuf_block_p1: document.getElementById('shuf-block-p1').checked,
+                shuf_block_p2: document.getElementById('shuf-block-p2').checked,
+                shuf_block_p3: document.getElementById('shuf-block-p3').checked,
+                
                 sample_margins: document.getElementById('sample-margins').checked
             };
             
             window.currentParts.forEach((part, idx) => {
                 opts[idx] = {
                     shuffle_options: document.getElementById(`opt-opts-${idx}`).checked,
-                    shuffle_order: part.is_listening ? false : document.getElementById(`opt-order-${idx}`).checked
+                    shuffle_order: part.is_listening ? false : document.getElementById(`opt-order-${idx}`).checked,
+                    pin_block: document.getElementById(`opt-pin-${idx}`).checked
                 };
             });
             
