@@ -74,6 +74,17 @@
                         <div class="pt-2 border-t border-slate-100">
                             <label class="flex items-center space-x-3 cursor-pointer mt-2">
                                 <div class="relative">
+                                    <input type="checkbox" id="auto-layout" checked class="sr-only toggle-checkbox">
+                                    <div class="block bg-slate-200 w-10 h-6 rounded-full toggle-label transition"></div>
+                                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform toggle-dot"></div>
+                                </div>
+                                <span class="text-sm font-bold text-indigo-700">Tự động dàn trang đáp án đều nhau<span class="block text-[11px] font-normal text-slate-500">Đ.án ngắn xếp 1 hàng ngang, dài thì mỗi đ.án 1 dòng.</span></span>
+                            </label>
+                        </div>
+                        
+                        <div class="pt-2 border-t border-slate-100">
+                            <label class="flex items-center space-x-3 cursor-pointer mt-2">
+                                <div class="relative">
                                     <input type="checkbox" id="sample-margins" checked class="sr-only toggle-checkbox">
                                     <div class="block bg-slate-200 w-10 h-6 rounded-full toggle-label transition"></div>
                                     <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform toggle-dot"></div>
@@ -255,6 +266,19 @@ def copy_ppr(new_paragraph, source_paragraph, force_compact=True):
         old = new_paragraph._p.find(qn('w:pPr'))
         if old is not None: new_paragraph._p.remove(old)
         new_paragraph._p.insert(0, new_ppr)
+
+def _set_tabs(p, positions):
+    pPr = p._p.get_or_add_pPr()
+    tabs = pPr.find(qn('w:tabs'))
+    if tabs is not None:
+        pPr.remove(tabs)
+    tabs = OxmlElement('w:tabs')
+    for pos in positions:
+        tab = OxmlElement('w:tab')
+        tab.set(qn('w:val'), 'left')
+        tab.set(qn('w:pos'), str(pos))
+        tabs.append(tab)
+    pPr.append(tabs)
 
 class ParaSpec:
     __slots__ = ("source_paragraph", "segments")
@@ -737,7 +761,7 @@ def _make_block_text_mapper(block_qnums, number_str_map):
 
     return substitute
 
-_LEADING_LETTER_RE = re.compile(r'^(\s*)([ABCD])(\.)')
+_LEADING_LETTER_RE = re.compile(r'^(\s*)([ABCD])([\.\)])')
 
 def _relabel_first_char(segments, new_letter):
     if not segments: return segments
@@ -818,7 +842,7 @@ def _emit_header_line(doc, parsed, header_line):
     run.bold = True
     return p
 
-def render_exam_docx(parsed, global_header, blocks, option_perm, number_str_map, out_path, header_line=None, page_setup=None):
+def render_exam_docx(parsed, global_header, blocks, option_perm, number_str_map, out_path, header_line=None, page_setup=None, auto_layout=True):
     doc = Document(parsed["doc_path"])
     body = doc.element.body
     sect_prs = body.findall(qn('w:sectPr'))
@@ -843,22 +867,60 @@ def render_exam_docx(parsed, global_header, blocks, option_perm, number_str_map,
             new_num_str = number_str_map[old_q_num]
             opts = option_perm[old_q_num]
             
-            if q.options_mode == 'inline_with_marker':
+            for sp in q.stem_paragraphs:
                 p = doc.add_paragraph()
-                copy_ppr(p, q.stem_paragraphs[0].source_paragraph, force_compact=True)
-                for seg in q.stem_paragraphs[0].segments: 
+                copy_ppr(p, sp.source_paragraph, force_compact=True)
+                for seg in sp.segments: 
                     _copy_seg_run(p, seg, new_number_str=new_num_str)
-                gaps = _gap_list(q)
-                for i, opt in enumerate(opts):
-                    if i > 0: _emit_gap(p, gaps[i - 1], opt)
-                    _emit_option_run(p, opt, "ABCD"[i], True)
-            else:
-                for sp in q.stem_paragraphs:
+                    
+            if auto_layout and opts:
+                max_len = 0
+                for opt in opts:
+                    txt = "".join(seg[0] for seg in opt.segments).strip()
+                    max_len = max(max_len, len(txt))
+                    
+                if max_len > 35:
+                    layout_mode = 4
+                elif max_len > 15:
+                    layout_mode = 2
+                else:
+                    layout_mode = 1
+                    
+                ref_ppr_src = q.options_ppr_source or q.stem_paragraphs[-1].source_paragraph
+                    
+                if layout_mode == 1:
                     p = doc.add_paragraph()
-                    copy_ppr(p, sp.source_paragraph, force_compact=True)
-                    for seg in sp.segments: 
-                        _copy_seg_run(p, seg, new_number_str=new_num_str)
-                if q.options_mode == 'same_line':
+                    copy_ppr(p, ref_ppr_src, force_compact=True)
+                    _set_tabs(p, [2500, 5000, 7500])
+                    for i, opt in enumerate(opts):
+                        if i > 0: p.add_run('\t')
+                        _emit_option_run(p, opt, "ABCD"[i], True)
+                elif layout_mode == 2:
+                    p1 = doc.add_paragraph()
+                    copy_ppr(p1, ref_ppr_src, force_compact=True)
+                    _set_tabs(p1, [5000])
+                    _emit_option_run(p1, opts[0], "A", True)
+                    p1.add_run('\t')
+                    _emit_option_run(p1, opts[1], "B", True)
+                    
+                    p2 = doc.add_paragraph()
+                    copy_ppr(p2, ref_ppr_src, force_compact=True)
+                    _set_tabs(p2, [5000])
+                    _emit_option_run(p2, opts[2], "C", True)
+                    p2.add_run('\t')
+                    _emit_option_run(p2, opts[3], "D", True)
+                else:
+                    for i, opt in enumerate(opts):
+                        p = doc.add_paragraph()
+                        copy_ppr(p, ref_ppr_src, force_compact=True)
+                        _emit_option_run(p, opt, "ABCD"[i], True)
+            else:
+                if q.options_mode == 'inline_with_marker':
+                    gaps = _gap_list(q)
+                    for i, opt in enumerate(opts):
+                        if i > 0: _emit_gap(p, gaps[i - 1], opt)
+                        _emit_option_run(p, opt, "ABCD"[i], True)
+                elif q.options_mode == 'same_line':
                     p = doc.add_paragraph()
                     copy_ppr(p, q.options_ppr_source, force_compact=True)
                     gaps = _gap_list(q)
@@ -934,6 +996,7 @@ def generate_shuffled(options_json):
     start_code = opts.pop('start_code', 101)
     insert_header = opts.pop('insert_header', True)
     sample_margins = opts.pop('sample_margins', True)
+    auto_layout = opts.pop('auto_layout', True)
     
     py_opts = {
         "swap_p1": opts.pop('swap_p1', False),
@@ -955,7 +1018,7 @@ def generate_shuffled(options_json):
         header_line = f"Mã đề: {ma_de}" if insert_header else None
         out_path = f"/MaDe_{ma_de}.docx"
         engine.render_exam_docx(G_PARSED, global_header, blocks, option_perm, number_str_map, out_path, header_line=header_line,
-                                page_setup=(engine.SAMPLE_PAGE if sample_margins else None))
+                                page_setup=(engine.SAMPLE_PAGE if sample_margins else None), auto_layout=auto_layout)
         keys = engine.compute_answer_key(new_order, option_perm, number_str_map)
         all_keys.append((f"Mã đề {ma_de}", keys))
         
@@ -1230,6 +1293,7 @@ def generate_shuffled(options_json):
                 shuf_block_p2: document.getElementById('shuf-block-p2') ? document.getElementById('shuf-block-p2').checked : false,
                 shuf_block_p3: document.getElementById('shuf-block-p3') ? document.getElementById('shuf-block-p3').checked : false,
                 
+                auto_layout: document.getElementById('auto-layout').checked,
                 sample_margins: document.getElementById('sample-margins').checked
             };
             
